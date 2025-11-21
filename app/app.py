@@ -2,6 +2,8 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
-@app.get("/")
-def read_root():
-    return {"message": "vidyesh"}
+text_posts = {"1": {"title":"New Post", "content":  "cool test post"}}
+
+@app.get("/posts")
+def get_all_posts():
+    return text_posts
