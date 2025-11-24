@@ -55,6 +55,12 @@ async def get_post(post_id: int):
     return text_posts.get(post_id)
 
 
+@app.post("/posts")
+async def create_post(post: PostCreate) -> PostResponse:
+    new_post = {"title": post.title, "content": post.content}
+    text_posts[max(text_posts.keys()) + 1] = new_post
+    return PostResponse(**new_post)
+
 # @app.post("/posts")
 # async def create_post(post_id: int, post: PostCreate) -> PostResponse:
 #     if post_id in text_posts:
@@ -63,16 +69,5 @@ async def get_post(post_id: int):
 #             detail=f"Post with id {post_id} already exists",
 #         )
 #     new_post = {"title": post.title, "content": post.content}
-#     text_posts[max(text_posts.keys()) + 1] = new_post
+#     text_posts[post_id] = new_post
 #     return PostResponse(**new_post)
-
-@app.post("/posts")
-async def create_post(post_id: int, post: PostCreate) -> PostResponse:
-    if post_id in text_posts:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Post with id {post_id} already exists",
-        )
-    new_post = {"title": post.title, "content": post.content}
-    text_posts[post_id] = new_post
-    return PostResponse(**new_post)
