@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, status
-from app.schemas import PostCreate
+from app.schemas import PostCreate, PostResponse
 
 app = FastAPI()
 
@@ -56,7 +56,7 @@ async def get_post(post_id: int):
 
 
 @app.post("/posts")
-async def create_post(post_id: int, post: PostCreate):
+async def create_post(post_id: int, post: PostCreate) -> PostResponse:
     if post_id in text_posts:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -64,4 +64,4 @@ async def create_post(post_id: int, post: PostCreate):
         )
     new_post = {"title": post.title, "content": post.content}
     text_posts[max(text_posts.keys()) + 1] = new_post
-    return new_post
+    return PostResponse(**new_post)
