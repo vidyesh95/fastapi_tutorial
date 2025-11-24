@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI,HTTPException, status
 
 app = FastAPI()
 
@@ -16,11 +16,13 @@ text_posts = {
 }
 
 @app.get("/posts")
-def get_all_posts():
+async def get_all_posts(limit: int | None = None):
+    if limit:
+        return list(text_posts.values())[:limit]
     return text_posts
 
 @app.get("/posts/{post_id}")
-def get_post(post_id: int):
+async def get_post(post_id: int):
     if post_id not in text_posts:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with id {post_id} not found")
     return text_posts.get(post_id)
