@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, status
+from app.schemas import PostCreate
 
 app = FastAPI()
 
@@ -55,10 +56,12 @@ async def get_post(post_id: int):
 
 
 @app.post("/posts")
-async def create_post(post_id: int):
+async def create_post(post_id: int, post: PostCreate):
     if post_id in text_posts:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Post with id {post_id} already exists",
         )
-    return text_posts[post_id]
+    new_post = {"title": post.title, "content": post.content}
+    text_posts[max(text_posts.keys()) + 1] = new_post
+    return new_post
