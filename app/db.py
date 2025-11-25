@@ -7,8 +7,8 @@ from sqlmodel import Field, Session, SQLModel, create_engine
 
 class Post(SQLModel, table=True):
     id: UUID = Field(default_factory=uuid7, primary_key=True)
-    title: str | None = Field(default=None, index=True)
-    content: str | None = Field(default=None, index=True)
+    title: str = Field(index=True, max_length=100)
+    content: str = Field(max_length=1000)
 
 
 sqlite_file_name = "database.db"
