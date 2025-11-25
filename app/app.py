@@ -1,4 +1,5 @@
 from typing import Annotated, Sequence
+from uuid import UUID
 from fastapi import FastAPI, Query, HTTPException, File, UploadFile, Form, status
 
 # from app.schemas import PostCreate, PostResponse
@@ -108,3 +109,14 @@ def get_feeds(
 ) -> Sequence[Post]:
     feeds = session.exec(select(Post).offset(offset).limit(limit)).all()
     return feeds
+
+
+@app.get("/feed/{post_id}")
+def get_feed(post_id: UUID, session: SessionDep) -> Post:
+    feed = session.get(Post, post_id)
+    if not feed:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Feed with id {post_id} not found",
+        )
+    return feed
