@@ -1,3 +1,5 @@
+from datetime import UTC
+from datetime import datetime
 from uuid import UUID, uuid7
 from typing import Annotated
 from fastapi import Depends
@@ -7,8 +9,11 @@ from sqlmodel import Field, Session, SQLModel, create_engine
 
 class Post(SQLModel, table=True):
     id: UUID = Field(default_factory=uuid7, primary_key=True)
-    title: str = Field(index=True, max_length=100)
-    content: str = Field(max_length=1000)
+    caption: str | None = Field(default=None, max_length=100)
+    url: str = Field(max_length=1000, nullable=False)
+    file_type: str = Field(max_length=100, nullable=False)
+    file_name: str = Field(index=True, max_length=100, nullable=False)
+    created_at: datetime = Field(default_factory=lambda:datetime.now(UTC))
 
 
 sqlite_file_name = "database.db"
