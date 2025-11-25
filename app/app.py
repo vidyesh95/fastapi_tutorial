@@ -88,17 +88,11 @@ app = FastAPI(lifespan=lifespan)
 
 @app.post("/upload")
 def upload_file(post: Post, session: SessionDep) -> Post:
-    # post = Post(
-    #     caption=post.caption,
-    #     url=post.url,
-    #     file_type=post.file_type,
-    #     file_name=post.file_name,
-    # )
     post = Post(
         caption=post.caption,
-        url="Dummy URL",
-        file_type="image",
-        file_name="Dummy File Name",
+        url=post.url,
+        file_type=post.file_type,
+        file_name=post.file_name,
     )
     session.add(post)
     session.commit()
@@ -110,7 +104,7 @@ def upload_file(post: Post, session: SessionDep) -> Post:
 def get_feed(
     session: SessionDep,
     offset: int = 0,
-    limit: Annotated[int, Query(default=10, le=100)] = 10,
+    limit: Annotated[int, Query(le=100)] = 10,
 ) -> Sequence[Post]:
     feeds = session.exec(select(Post).offset(offset).limit(limit)).all()
     return feeds
