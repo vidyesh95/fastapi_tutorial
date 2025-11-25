@@ -101,7 +101,7 @@ def upload_file(post: Post, session: SessionDep) -> Post:
 
 
 @app.get("/feeds")
-def get_feed(
+def get_feeds(
     session: SessionDep,
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 10,
