@@ -10,8 +10,8 @@ from sqlmodel import Field, Session, SQLModel, create_engine
 class Post(SQLModel, table=True):
     id: UUID = Field(default_factory=uuid7, primary_key=True)
     caption: str | None = Field(default=None, max_length=100)
-    url: str = Field(max_length=1000, nullable=False)
-    file_type: str = Field(max_length=100, nullable=False)
+    url: str = Field(max_length=2083, nullable=False)
+    file_type: str = Field(max_length=50, nullable=False)
     file_name: str = Field(index=True, max_length=100, nullable=False)
     created_at: datetime = Field(default_factory=lambda:datetime.now(UTC))
 
