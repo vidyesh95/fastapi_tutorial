@@ -101,14 +101,14 @@ def upload_file(post: Post, session: SessionDep) -> Post:
     return post
 
 
-@app.get("/feeds")
-def get_feeds(
+@app.get("/feed")
+def get_all_feed(
     session: SessionDep,
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 10,
 ) -> Sequence[Post]:
-    feeds = session.exec(select(Post).offset(offset).limit(limit)).all()
-    return feeds
+    feed = session.exec(select(Post).offset(offset).limit(limit)).all()
+    return feed
 
 
 @app.get("/feed/{post_id}")
