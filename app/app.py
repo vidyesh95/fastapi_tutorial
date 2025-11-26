@@ -5,7 +5,7 @@ from fastapi import FastAPI, Query, HTTPException, File, UploadFile, Form, statu
 # from app.schemas import PostCreate, PostResponse
 from app.db import create_db_and_tables, Post, SessionDep
 from contextlib import asynccontextmanager
-from sqlmodel import select
+from sqlmodel import select, col
 
 
 @asynccontextmanager
@@ -107,7 +107,9 @@ def get_all_feed(
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 10,
 ) -> Sequence[Post]:
-    feed = session.exec(select(Post).offset(offset).limit(limit)).all()
+    feed = session.exec(
+        select(Post).order_by(col(Post.created_at).desc()).offset(offset).limit(limit)
+    ).all()
     return feed
 
 
@@ -133,4 +135,3 @@ def delete_feed(post_id: UUID, session: SessionDep) -> None:
     session.delete(feed)
     session.commit()
     return None
-
