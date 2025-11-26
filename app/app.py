@@ -120,3 +120,17 @@ def get_feed(post_id: UUID, session: SessionDep) -> Post:
             detail=f"Feed with id {post_id} not found",
         )
     return feed
+
+
+@app.delete("/feed/{post_id}")
+def delete_feed(post_id: UUID, session: SessionDep) -> None:
+    feed = session.get(Post, post_id)
+    if not feed:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Feed with id {post_id} not found",
+        )
+    session.delete(feed)
+    session.commit()
+    return None
+
