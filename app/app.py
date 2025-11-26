@@ -1,6 +1,8 @@
 from typing import Annotated, Sequence
 from uuid import UUID
 from fastapi import FastAPI, Query, HTTPException, File, UploadFile, Form, status
+from fastapi.staticfiles import StaticFiles
+import shutil
 
 # from app.schemas import PostCreate, PostResponse
 from app.db import create_db_and_tables, Post, SessionDep
@@ -15,6 +17,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 # text_posts = {
@@ -88,12 +91,20 @@ app = FastAPI(lifespan=lifespan)
 
 
 @app.post("/upload")
-def upload_file(post: Post, session: SessionDep) -> Post:
+def upload_file(
+    session: SessionDep,
+    file: UploadFile = File(...),
+    caption: str = Form(...),
+) -> Post:
+    file_location = f"static/{file.filename}"
+    with open(file_location, "wb+") as file_object:
+        shutil.copyfileobj(file.file, file_object)
+
     post = Post(
-        caption=post.caption,
-        url=post.url,
-        file_type=post.file_type,
-        file_name=post.file_name,
+        caption=caption,
+        url=f"/static/{file.filename}",
+        file_type=file.content_type,
+        file_name=file.filename,
     )
     session.add(post)
     session.commit()
